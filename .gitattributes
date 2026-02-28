@@ -1,0 +1,31 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Source code
+*.c text
+*.h text
+*.py text
+*.md text
+*.json text
+*.txt text
+*.csv text
+
+# Scripts
+*.sh text eol=lf
+*.bat text eol=crlf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.tflite binary
+*.keras binary
+*.elf binary
+*.hex binary
+*.bin binary
+*.data binary
+*.dbsqlite binary
+*.improj binary
+*.imsession binary

@@ -1,0 +1,61 @@
+# ===========================
+# Edgi-Talk IMU AI .gitignore
+# ===========================
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+venv/
+.venv/
+env/
+.env/
+*.egg-info/
+dist/
+build/
+*.egg
+.ipynb_checkpoints/
+
+# === Model Training ===
+# 保留 output/ 目录下的关键生成文件，忽略大体积模型
+model-training/output/best_model.keras
+model-training/output/model_float32.tflite
+# 注意: model_int8.tflite 保留（较小，是部署关键文件）
+
+# === RT-Thread 内核与第三方库（体积巨大，通过子模块或说明文档引导获取）===
+firmware/*/rt-thread/
+firmware/*/libraries/
+firmware/*/packages/
+firmware/*/libs/
+firmware/*/tools/
+
+# === RT-Thread Build Artifacts ===
+firmware/*/Debug/
+firmware/*/build/
+firmware/*/*.pyc
+firmware/*/rtconfig.pyc
+firmware/*/*.elf
+firmware/*/*.hex
+firmware/*/*.bin
+firmware/*/*.map
+
+# === IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# === Backup files ===
+*.bak
+
+# === CSV data files (user-generated) ===
+tools/*.csv
+
+# === OS ===
+desktop.ini
+ehthumbs.db

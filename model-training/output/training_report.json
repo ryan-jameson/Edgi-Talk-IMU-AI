@@ -1,0 +1,59 @@
+{
+  "model_architecture": "Conv2D (3 blocks) + GlobalAvgPool + Dense",
+  "input_shape": [
+    100,
+    6,
+    1
+  ],
+  "output_classes": [
+    "stationary",
+    "shaking",
+    "circle"
+  ],
+  "sample_rate_hz": 50,
+  "window_size_samples": 100,
+  "window_size_seconds": 2.0,
+  "window_step_samples": 50,
+  "total_windows": 2973,
+  "train_windows": 2378,
+  "val_windows": 297,
+  "test_windows": 298,
+  "float32_test_accuracy": 0.9664429426193237,
+  "int8_test_accuracy": 0.9664429530201343,
+  "float32_model_size_kb": 182.7,
+  "int8_model_size_kb": 50.6,
+  "input_quantization": {
+    "scale": 0.003921568859368563,
+    "zero_point": -128
+  },
+  "output_quantization": {
+    "scale": 0.00390625,
+    "zero_point": -128
+  },
+  "normalization": {
+    "channel_names": [
+      "Accel_X",
+      "Accel_Y",
+      "Accel_Z",
+      "Gyro_X",
+      "Gyro_Y",
+      "Gyro_Z"
+    ],
+    "min": [
+      -57.84391403198242,
+      -52.11458969116211,
+      -49.33491897583008,
+      -500.0,
+      -500.0,
+      -500.0
+    ],
+    "max": [
+      46.80903625488281,
+      51.44660568237305,
+      55.46407699584961,
+      499.9847412109375,
+      499.9847412109375,
+      499.9847412109375
+    ]
+  }
+}
