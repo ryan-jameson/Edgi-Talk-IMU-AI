@@ -1,300 +1,598 @@
-<div align="center"># Edgi-Talk IMU AI — 基于 RT-Thread 的嵌入式动作识别系统
+# Edgi-Talk IMU AI<div align="center"># Edgi-Talk IMU AI — 基于 RT-Thread 的嵌入式动作识别系统
 
 
 
-# 🧠 Edgi-Talk IMU AI[**中文**](#简介) | [**English**](#introduction)
+**基于 RT-Thread 的嵌入式端到端 AI 动作识别系统**
 
 
 
-### 基于 RT-Thread 的嵌入式端到端 AI 动作识别系统---
-
-
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)## 简介
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)# 🧠 Edgi-Talk IMU AI[**中文**](#简介) | [**English**](#introduction)
 
 [![RT-Thread](https://img.shields.io/badge/RTOS-RT--Thread%205.x-brightgreen)](https://www.rt-thread.org/)
 
-[![TensorFlow](https://img.shields.io/badge/Training-TensorFlow%202.x-orange)](https://www.tensorflow.org/)本项目是一个完整的 **端到端嵌入式 AI 动作识别系统**，基于 **Edgi-Talk 开发板**（PSoC Edge M55 应用核）和 **RT-Thread 实时操作系统**，使用板载 IMU（LSM6DS3 六轴加速度计 + 陀螺仪）实现三种动作的实时识别：
+[![TensorFlow](https://img.shields.io/badge/Training-TensorFlow%202.x-orange)](https://www.tensorflow.org/)
 
 [![LVGL](https://img.shields.io/badge/GUI-LVGL%209.x-red)](https://lvgl.io/)
 
-[![Platform](https://img.shields.io/badge/Platform-PSoC%20Edge%20M55-purple)](https://www.infineon.com/)| 动作类别 | 说明 |
-
-|---------|------|
-
-**纯 C 推理引擎 · INT8 量化 CNN · LVGL 图形界面 · 全流程覆盖**| **Stationary** | 静止（平放/手持不动） |
-
-| **Shaking** | 摇晃 |
-
-[中文](#-简介) · [English](#-introduction) · [快速开始](#-快速开始) · [项目结构](#-项目结构)| **Circle** | 画圈 |
+[![Platform](https://img.shields.io/badge/Platform-PSoC%20Edge%20M55-purple)](https://www.infineon.com/)### 基于 RT-Thread 的嵌入式端到端 AI 动作识别系统---
 
 
 
-</div>### 系统架构
+[中文](#简介) · [English](#introduction)
 
 
 
----```
+---[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)## 简介
 
-┌─────────────────────────────────────────────────────────┐
 
-## ✨ 简介│                    完整工作流                              │
 
-│                                                         │
+## 简介[![RT-Thread](https://img.shields.io/badge/RTOS-RT--Thread%205.x-brightgreen)](https://www.rt-thread.org/)
 
-本项目是一个完整的 **端到端嵌入式 AI 动作识别系统**，基于 **Edgi-Talk 开发板**（Infineon PSoC Edge M55 应用核）和 **RT-Thread 实时操作系统**，使用板载 IMU（LSM6DS3 六轴加速度计 + 陀螺仪）实现三种动作的实时识别：│  ① 数据采集        ② 模型训练         ③ 部署推理          │
 
-│  ┌───────────┐    ┌──────────────┐   ┌──────────────┐   │
 
-| 动作类别 | 说明 | 图标 |│  │ firmware/  │    │   model-     │   │  firmware/   │   │
+本项目是一个完整的 **端到端嵌入式 AI 动作识别系统**，基于 **Edgi-Talk 开发板**（Infineon PSoC Edge M55 应用核）和 **RT-Thread 实时操作系统**，使用板载 IMU（LSM6DS3 六轴加速度计 + 陀螺仪）实现三种动作的实时识别：[![TensorFlow](https://img.shields.io/badge/Training-TensorFlow%202.x-orange)](https://www.tensorflow.org/)本项目是一个完整的 **端到端嵌入式 AI 动作识别系统**，基于 **Edgi-Talk 开发板**（PSoC Edge M55 应用核）和 **RT-Thread 实时操作系统**，使用板载 IMU（LSM6DS3 六轴加速度计 + 陀螺仪）实现三种动作的实时识别：
 
-|:--------:|------|:----:|│  │  data-     │───>│  training/   │──>│  ai-         │   │
+
+
+- **Stationary** — 静止（平放 / 手持不动）[![LVGL](https://img.shields.io/badge/GUI-LVGL%209.x-red)](https://lvgl.io/)
+
+- **Shaking** — 摇晃
+
+- **Circle** — 画圈[![Platform](https://img.shields.io/badge/Platform-PSoC%20Edge%20M55-purple)](https://www.infineon.com/)| 动作类别 | 说明 |
+
+
+
+---|---------|------|
+
+
+
+## 系统架构**纯 C 推理引擎 · INT8 量化 CNN · LVGL 图形界面 · 全流程覆盖**| **Stationary** | 静止（平放/手持不动） |
+
+
+
+```| **Shaking** | 摇晃 |
+
+┌──────────────────────────────────────────────────────────┐
+
+│                     完整工作流 Pipeline                    │[中文](#-简介) · [English](#-introduction) · [快速开始](#-快速开始) · [项目结构](#-项目结构)| **Circle** | 画圈 |
+
+│                                                          │
+
+│  ① 数据采集          ② 模型训练          ③ 部署推理       │
+
+│  ┌────────────┐    ┌──────────────┐    ┌──────────────┐  │
+
+│  │ firmware/   │    │  model-      │    │ firmware/    │  │</div>### 系统架构
+
+│  │ data-       │--->│  training/   │--->│ ai-          │  │
+
+│  │ collector   │CSV │              │ .c │ inference    │  │
+
+│  └────────────┘    └──────────────┘    └──────────────┘  │
+
+│   Edgi-Talk 板       PC (Python)        Edgi-Talk 板     │---```
+
+│   USB 串口采集        TensorFlow 训练     实时 AI 推理     │
+
+│   LVGL 波形显示       INT8 量化+C代码     LVGL 结果展示    │┌─────────────────────────────────────────────────────────┐
+
+└──────────────────────────────────────────────────────────┘
+
+```## ✨ 简介│                    完整工作流                              │
+
+
+
+---│                                                         │
+
+
+
+## 项目特色本项目是一个完整的 **端到端嵌入式 AI 动作识别系统**，基于 **Edgi-Talk 开发板**（Infineon PSoC Edge M55 应用核）和 **RT-Thread 实时操作系统**，使用板载 IMU（LSM6DS3 六轴加速度计 + 陀螺仪）实现三种动作的实时识别：│  ① 数据采集        ② 模型训练         ③ 部署推理          │
+
+
+
+- **纯 C 推理引擎** — 不依赖 TFLite Micro / C++，纯 C 实现 INT8 量化 CNN 推理，适合资源受限 MCU│  ┌───────────┐    ┌──────────────┐   ┌──────────────┐   │
+
+- **LVGL 图形界面** — 数据采集阶段展示实时波形，推理阶段展示动作识别统计与趋势图
+
+- **端到端流水线** — 从数据采集 → 训练 → 量化 → C 代码生成 → 嵌入式部署，全流程一键覆盖| 动作类别 | 说明 | 图标 |│  │ firmware/  │    │   model-     │   │  firmware/   │   │
+
+- **50Hz 实时推理** — 滑动窗口（100 采样点 / 2 秒窗口），20ms 推理周期
+
+- **超轻量模型** — 3 层 Conv2D + Dense，INT8 模型仅约 50KB，测试准确率 96.6%|:--------:|------|:----:|│  │  data-     │───>│  training/   │──>│  ai-         │   │
+
+- **自动化部署** — 训练完成后一键生成 C 代码并部署到固件工程
 
 | **Stationary** | 静止（平放 / 手持不动） | 🟡 |│  │ collector  │CSV │              │.c │ inference    │   │
 
+---
+
 | **Shaking** | 摇晃 | 🔴 |│  └───────────┘    └──────────────┘   └──────────────┘   │
+
+## 模型性能
 
 | **Circle** | 画圈 | 🟢 |│   Edgi-Talk板       PC (Python)        Edgi-Talk板       │
 
-│   USB串口采集        TensorFlow训练      实时AI推理        │
+```
 
-## 🏗️ 系统架构│   LVGL波形显示      INT8量化+C代码生成   LVGL结果展示       │
+模型架构        3x Conv2D + BatchNorm + MaxPool + Dense│   USB串口采集        TensorFlow训练      实时AI推理        │
 
-└─────────────────────────────────────────────────────────┘
+Float32 大小    182.7 KB
 
-``````
+INT8 大小       50.6 KB## 🏗️ 系统架构│   LVGL波形显示      INT8量化+C代码生成   LVGL结果展示       │
 
-┌──────────────────────────────────────────────────────────────────┐
+Float32 准确率  96.64%
 
-│                       完整工作流 Pipeline                         │### 项目特色
+INT8 准确率     96.64%└─────────────────────────────────────────────────────────┘
 
-│                                                                  │
+推理窗口        2 秒 (100 采样点 @ 50Hz)
 
-│   ① 数据采集             ② 模型训练              ③ 部署推理       │- 🎯 **纯 C 推理引擎**：不依赖 TFLite Micro / C++，纯 C 实现 INT8 量化 CNN 推理，适合资源受限 MCU
+窗口步进        1 秒 (50 采样点, 50% 重叠)``````
 
-│   ┌─────────────┐       ┌──────────────┐       ┌──────────────┐ │- 📊 **LVGL 图形界面**：数据采集阶段展示实时波形，推理阶段展示动作识别统计
+训练数据        2973 个窗口 (2 人采集)
 
-│   │  firmware/   │       │   model-     │       │  firmware/   │ │- 🔄 **端到端流水线**：从数据采集 → 模型训练 → 量化 → C代码生成 → 嵌入式部署，全流程覆盖
+```┌──────────────────────────────────────────────────────────────────┐
 
-│   │  data-       │──CSV──│  training/   │──.c──▸│  ai-         │ │- ⚡ **50Hz 实时推理**：使用滑动窗口（100 采样点 / 2 秒窗口）实现实时动作分类
 
-│   │  collector   │       │              │       │  inference   │ │- 🧠 **轻量级 CNN**：3 层 Conv2D + Dense，INT8 模型仅 ~50KB，测试准确率 96.6%
 
-│   └─────────────┘       └──────────────┘       └──────────────┘ │
+### 模型架构│                       完整工作流 Pipeline                         │### 项目特色
 
-│    Edgi-Talk 板           PC (Python)            Edgi-Talk 板    │---
 
-│    USB 串口采集            TensorFlow 训练         实时 AI 推理    │
 
-│    LVGL 波形显示           INT8 量化 + C 代码       LVGL 结果展示  │## 目录结构
+```│                                                                  │
 
-└──────────────────────────────────────────────────────────────────┘
+Input: [100, 6, 1]  (100 timesteps x 6 IMU channels x 1)
 
-``````
+       ││   ① 数据采集             ② 模型训练              ③ 部署推理       │- 🎯 **纯 C 推理引擎**：不依赖 TFLite Micro / C++，纯 C 实现 INT8 量化 CNN 推理，适合资源受限 MCU
+
+  Conv2D(8, 5x1) + BatchNorm + ReLU + MaxPool(2x1)
+
+       ││   ┌─────────────┐       ┌──────────────┐       ┌──────────────┐ │- 📊 **LVGL 图形界面**：数据采集阶段展示实时波形，推理阶段展示动作识别统计
+
+  Conv2D(16, 5x1) + BatchNorm + ReLU + MaxPool(2x1)
+
+       ││   │  firmware/   │       │   model-     │       │  firmware/   │ │- 🔄 **端到端流水线**：从数据采集 → 模型训练 → 量化 → C代码生成 → 嵌入式部署，全流程覆盖
+
+  Conv2D(24, 3x3) + BatchNorm + ReLU + MaxPool(2x1)
+
+       ││   │  data-       │──CSV──│  training/   │──.c──▸│  ai-         │ │- ⚡ **50Hz 实时推理**：使用滑动窗口（100 采样点 / 2 秒窗口）实现实时动作分类
+
+  Flatten -> Dense(24) + ReLU
+
+       ││   │  collector   │       │              │       │  inference   │ │- 🧠 **轻量级 CNN**：3 层 Conv2D + Dense，INT8 模型仅 ~50KB，测试准确率 96.6%
+
+  Dense(3) + Softmax
+
+       ││   └─────────────┘       └──────────────┘       └──────────────┘ │
+
+Output: [stationary, shaking, circle]
+
+```│    Edgi-Talk 板           PC (Python)            Edgi-Talk 板    │---
+
+
+
+---│    USB 串口采集            TensorFlow 训练         实时 AI 推理    │
+
+
+
+## 项目结构│    LVGL 波形显示           INT8 量化 + C 代码       LVGL 结果展示  │## 目录结构
+
+
+
+```└──────────────────────────────────────────────────────────────────┘
 
 Edgi-Talk-IMU-AI/
 
-## 🎯 项目特色│
+├── README.md                        # 本文件``````
 
-├── README.md                          # 本文件
+├── LICENSE                          # MIT 开源许可证
 
-| 特性 | 描述 |├── LICENSE                            # 开源许可证
+│Edgi-Talk-IMU-AI/
 
-|------|------|│
+├── firmware/                        # 嵌入式固件 (RT-Thread 工程)
 
-| 🧠 **纯 C 推理引擎** | 不依赖 TFLite Micro / C++，纯 C 实现 INT8 量化 CNN 推理，适合资源受限 MCU |├── firmware/                          # 嵌入式固件（RT-Thread 工程）
+│   ├── data-collector/              #   ① 数据采集固件## 🎯 项目特色│
 
-| 📊 **LVGL 图形界面** | 数据采集阶段展示实时波形，推理阶段展示动作识别统计与趋势图 |│   ├── data-collector/                # ① 数据采集固件
+│   │   └── applications/
 
-| 🔄 **端到端流水线** | 从数据采集 → 训练 → 量化 → C 代码生成 → 嵌入式部署，全流程一键覆盖 |│   │   ├── applications/              #    应用层代码
+│   │       ├── main.c               #      主程序 + LVGL UI (实时波形)├── README.md                          # 本文件
 
-| ⚡ **50Hz 实时推理** | 滑动窗口（100 采样点 / 2 秒窗口），20ms 推理周期 |│   │   │   ├── main.c                 #    主程序 + LVGL UI（波形显示）
+│   │       ├── imu_task.c           #      IMU 采集 + USB 串口发送
 
-| 📦 **超轻量模型** | 3 层 Conv2D + Dense，INT8 模型仅 ~50KB，测试准确率 **96.6%** |│   │   │   ├── imu_task.c             #    IMU 数据采集 + USB 串口发送
+│   │       └── cdc_acm.c            #      USB CDC 虚拟串口驱动| 特性 | 描述 |├── LICENSE                            # 开源许可证
 
-| 🛠️ **自动化部署** | 训练完成后一键生成 C 代码并部署到固件工程 |│   │   │   ├── cdc_acm.c              #    USB CDC 虚拟串口驱动
+│   │
 
-│   │   │   └── SConscript
+│   └── ai-inference/                #   ③ AI 推理固件|------|------|│
 
-## 📊 模型性能│   │   ├── board/                     #    板级支持
+│       └── applications/
 
-│   │   ├── libraries/                 #    SDK 库
+│           ├── main.c               #      主程序 + LVGL UI (识别结果)| 🧠 **纯 C 推理引擎** | 不依赖 TFLite Micro / C++，纯 C 实现 INT8 量化 CNN 推理，适合资源受限 MCU |├── firmware/                          # 嵌入式固件（RT-Thread 工程）
 
-| 指标 | 数值 |│   │   ├── libs/                      #    第三方库
+│           ├── imu_task.c           #      IMU 六轴数据采集
 
-|:----:|:----:|│   │   ├── packages/                  #    RT-Thread 软件包
+│           ├── ai_task.c            #      AI 推理线程| 📊 **LVGL 图形界面** | 数据采集阶段展示实时波形，推理阶段展示动作识别统计与趋势图 |│   ├── data-collector/                # ① 数据采集固件
 
-| 模型架构 | 3× Conv2D + BatchNorm + MaxPool + Dense |│   │   ├── rt-thread/                 #    RT-Thread 内核
+│           ├── nn_model.c/h         #      神经网络 (自动生成)
 
-| Float32 模型大小 | 182.7 KB |│   │   ├── SConstruct                 #    SCons 构建入口
+│           └── preprocessing.c/h    #      预处理 (自动生成)| 🔄 **端到端流水线** | 从数据采集 → 训练 → 量化 → C 代码生成 → 嵌入式部署，全流程一键覆盖 |│   │   ├── applications/              #    应用层代码
 
-| **INT8 量化模型大小** | **50.6 KB** |│   │   ├── rtconfig.h                 #    RT-Thread 配置
+│
 
-| Float32 测试准确率 | 96.64% |│   │   ├── rtconfig.py                #    工具链配置
+├── model-training/                  # ② 模型训练 (Python)| ⚡ **50Hz 实时推理** | 滑动窗口（100 采样点 / 2 秒窗口），20ms 推理周期 |│   │   │   ├── main.c                 #    主程序 + LVGL UI（波形显示）
 
-| **INT8 测试准确率** | **96.64%** |│   │   └── Kconfig                    #    Menuconfig 配置
+│   ├── run_training.py              #   一键训练脚本
 
-| 推理窗口 | 2 秒（100 采样点 @ 50Hz） |│   │
+│   ├── train_model.ipynb            #   Jupyter Notebook 交互训练| 📦 **超轻量模型** | 3 层 Conv2D + Dense，INT8 模型仅 ~50KB，测试准确率 **96.6%** |│   │   │   ├── imu_task.c             #    IMU 数据采集 + USB 串口发送
 
-| 窗口步进 | 1 秒（50 采样点，50% 重叠） |│   └── ai-inference/                  # ③ AI 推理固件
+│   ├── generate_c_inference.py      #   生成纯 C 推理引擎
 
-| 训练数据 | 2973 个窗口（2 人采集） |│       ├── applications/              #    应用层代码
+│   ├── extract_model_weights.py     #   提取模型权重| 🛠️ **自动化部署** | 训练完成后一键生成 C 代码并部署到固件工程 |│   │   │   ├── cdc_acm.c              #    USB CDC 虚拟串口驱动
 
-│       │   ├── main.c                 #    主程序 + LVGL UI（识别结果展示）
+│   ├── verify_c_inference.py        #   验证 C 推理正确性
 
-<details>│       │   ├── imu_task.c             #    IMU 数据采集（6轴）
+│   ├── requirements.txt             #   Python 依赖│   │   │   └── SConscript
 
-<summary>📐 模型架构详情（点击展开）</summary>│       │   ├── ai_task.c              #    AI 推理线程
+│   ├── Data/                        #   训练数据集 (2 人采集)
 
-│       │   ├── nn_model.c             #    神经网络模型（自动生成）
+│   ├── output/                      #   训练输出 (模型 + C 代码)## 📊 模型性能│   │   ├── board/                     #    板级支持
 
-```│       │   ├── nn_model.h             #    模型头文件
+│   └── Models/                      #   预训练模型
+
+││   │   ├── libraries/                 #    SDK 库
+
+├── tools/                           # 辅助工具
+
+│   ├── record.py                    #   PC 端串口数据录入| 指标 | 数值 |│   │   ├── libs/                      #    第三方库
+
+│   └── deploy_model.py              #   一键部署 (训练输出 -> 固件)
+
+│|:----:|:----:|│   │   ├── packages/                  #    RT-Thread 软件包
+
+└── docs/                            # 项目文档
+
+    ├── hardware.md                  #   硬件接口说明| 模型架构 | 3× Conv2D + BatchNorm + MaxPool + Dense |│   │   ├── rt-thread/                 #    RT-Thread 内核
+
+    └── figures/                     #   硬件接口图
+
+```| Float32 模型大小 | 182.7 KB |│   │   ├── SConstruct                 #    SCons 构建入口
+
+
+
+> **注意**：固件工程的 `rt-thread/`、`libraries/`、`packages/` 等第三方依赖未包含在仓库中，请参照下方环境搭建章节获取。| **INT8 量化模型大小** | **50.6 KB** |│   │   ├── rtconfig.h                 #    RT-Thread 配置
+
+
+
+---| Float32 测试准确率 | 96.64% |│   │   ├── rtconfig.py                #    工具链配置
+
+
+
+## 快速开始| **INT8 测试准确率** | **96.64%** |│   │   └── Kconfig                    #    Menuconfig 配置
+
+
+
+### 环境要求| 推理窗口 | 2 秒（100 采样点 @ 50Hz） |│   │
+
+
+
+- **开发板** — Edgi-Talk (Infineon PSoC Edge, M55 应用核)| 窗口步进 | 1 秒（50 采样点，50% 重叠） |│   └── ai-inference/                  # ③ AI 推理固件
+
+- **嵌入式 IDE** — RT-Thread Studio 2.x+
+
+- **交叉编译器** — arm-none-eabi-gcc| 训练数据 | 2973 个窗口（2 人采集） |│       ├── applications/              #    应用层代码
+
+- **Python** — 3.8+ (用于模型训练)
+
+- **Python 依赖** — TensorFlow 2.12~2.16, NumPy, Pandas, scikit-learn│       │   ├── main.c                 #    主程序 + LVGL UI（识别结果展示）
+
+
+
+### 环境搭建<details>│       │   ├── imu_task.c             #    IMU 数据采集（6轴）
+
+
+
+**固件开发环境：**<summary>📐 模型架构详情（点击展开）</summary>│       │   ├── ai_task.c              #    AI 推理线程
+
+
+
+1. 安装 [RT-Thread Studio](https://www.rt-thread.org/studio.html)│       │   ├── nn_model.c             #    神经网络模型（自动生成）
+
+2. 安装 arm-none-eabi-gcc 工具链（RT-Thread Studio 内置或手动安装）
+
+3. 通过 RT-Thread Studio 的包管理器获取 RT-Thread 内核 (v5.x)、LVGL 软件包 (v9.x)、CMSIS 5 (DSP/NN 库)```│       │   ├── nn_model.h             #    模型头文件
+
+4. 获取 Infineon PSoC Edge SDK 库文件，放置到 `firmware/*/libraries/` 目录
 
 Input: [100, 6, 1]  (100 timesteps × 6 IMU channels × 1)│       │   ├── preprocessing.c        #    预处理（归一化+量化）
 
+**Python 训练环境：**
+
          ││       │   ├── preprocessing.h        #    预处理头文件
 
-    Conv2D(8, 5×1) + BatchNorm + ReLU + MaxPool(2×1)│       │   ├── ui_record.h            #    UI 录制状态结构
+```bash
 
-         ││       │   └── SConscript
+cd model-training/    Conv2D(8, 5×1) + BatchNorm + ReLU + MaxPool(2×1)│       │   ├── ui_record.h            #    UI 录制状态结构
 
-    Conv2D(16, 5×1) + BatchNorm + ReLU + MaxPool(2×1)│       ├── board/                     #    板级支持
+python -m venv venv
+
+venv\Scripts\activate        # Windows         ││       │   └── SConscript
+
+# source venv/bin/activate   # Linux/macOS
+
+pip install -r requirements.txt    Conv2D(16, 5×1) + BatchNorm + ReLU + MaxPool(2×1)│       ├── board/                     #    板级支持
+
+```
 
          ││       ├── libraries/                 #    SDK 库
 
+### 第一步：数据采集
+
     Conv2D(24, 3×3) + BatchNorm + ReLU + MaxPool(2×1)│       ├── libs/                      #    第三方库
 
-         ││       ├── packages/                  #    RT-Thread 软件包
+1. 用 RT-Thread Studio 打开 `firmware/data-collector/` 工程
 
-    Flatten → Dense(24) + ReLU│       ├── rt-thread/                 #    RT-Thread 内核
+2. 编译并烧录至 Edgi-Talk 开发板         ││       ├── packages/                  #    RT-Thread 软件包
 
-         ││       ├── SConstruct                 #    SCons 构建入口
+3. USB 连接开发板至 PC
 
-    Dense(3) + Softmax│       ├── rtconfig.h                 #    RT-Thread 配置
+4. 运行数据录入脚本：    Flatten → Dense(24) + ReLU│       ├── rt-thread/                 #    RT-Thread 内核
 
-         ││       ├── rtconfig.py                #    工具链配置
 
-Output: [stationary, shaking, circle]│       └── Kconfig                    #    Menuconfig 配置
 
-```│
+```bash         ││       ├── SConstruct                 #    SCons 构建入口
 
-├── model-training/                    # ② 模型训练（Python 独立环境）
+cd tools/
 
-</details>│   ├── requirements.txt               #    Python 依赖
+# 修改 record.py 中的 COM_PORT 为实际串口号    Dense(3) + Softmax│       ├── rtconfig.h                 #    RT-Thread 配置
 
-│   ├── run_training.py                #    一键训练脚本
+python record.py
+
+```         ││       ├── rtconfig.py                #    工具链配置
+
+
+
+5. 在开发板 LCD 上点击 **Start Recording** 开始录制Output: [stationary, shaking, circle]│       └── Kconfig                    #    Menuconfig 配置
+
+6. 执行目标动作（静止 / 摇晃 / 画圈），按 Ctrl+C 结束
+
+7. 数据保存为 CSV 文件```│
+
+
+
+### 第二步：模型训练├── model-training/                    # ② 模型训练（Python 独立环境）
+
+
+
+```bash</details>│   ├── requirements.txt               #    Python 依赖
+
+cd model-training/
+
+python run_training.py│   ├── run_training.py                #    一键训练脚本
+
+```
 
 ---│   ├── train_model.ipynb              #    Jupyter Notebook 交互训练
 
+也可以使用 Jupyter Notebook 交互式训练：
+
 │   ├── generate_c_inference.py        #    生成纯 C 推理引擎
 
-## 📁 项目结构│   ├── extract_model_weights.py       #    提取模型权重
+```bash
+
+jupyter notebook train_model.ipynb## 📁 项目结构│   ├── extract_model_weights.py       #    提取模型权重
+
+```
 
 │   ├── verify_c_inference.py          #    验证 C 推理正确性
 
+训练完成后 `output/` 目录下生成：
+
 ```│   ├── metadata.json                  #    模型元数据
 
-Edgi-Talk-IMU-AI/│   ├── MovementTypeDetection.improj   #    DEEPCRAFT Studio 项目文件
+- `model_int8.tflite` — INT8 量化模型
 
-││   ├── Data/                          #    训练数据集
+- `nn_model.c` / `nn_model.h` — 纯 C 推理引擎代码Edgi-Talk-IMU-AI/│   ├── MovementTypeDetection.improj   #    DEEPCRAFT Studio 项目文件
 
-├── 📄 README.md                       # 本文件│   │   ├── Person1/                   #    采集者1的数据
+- `preprocessing.c` / `preprocessing.h` — 预处理代码
 
-├── 📄 LICENSE                         # MIT 开源许可证│   │   └── Person2/                   #    采集者2的数据
+- `training_report.json` — 训练报告（准确率约 96.6%）││   ├── Data/                          #    训练数据集
 
-││   ├── Models/                        #    预训练模型
 
-├── 🔧 firmware/                       # 嵌入式固件（RT-Thread 工程）│   │   └── conv2d-medium-balanced-2/
+
+### 第三步：部署推理├── 📄 README.md                       # 本文件│   │   ├── Person1/                   #    采集者1的数据
+
+
+
+**自动部署（推荐）：**├── 📄 LICENSE                         # MIT 开源许可证│   │   └── Person2/                   #    采集者2的数据
+
+
+
+```bash││   ├── Models/                        #    预训练模型
+
+cd tools/
+
+python deploy_model.py├── 🔧 firmware/                       # 嵌入式固件（RT-Thread 工程）│   │   └── conv2d-medium-balanced-2/
+
+```
 
 │   ├── data-collector/                # ① 数据采集固件│   ├── output/                        #    训练输出
 
+**手动部署：**
+
 │   │   └── applications/│   │   ├── best_model.keras           #    最佳 Keras 模型
+
+将以下文件从 `model-training/output/` 复制到 `firmware/ai-inference/applications/`：
 
 │   │       ├── main.c                 #    主程序 + LVGL UI（实时波形）│   │   ├── model_float32.tflite       #    Float32 TFLite 模型
 
-│   │       ├── imu_task.c             #    IMU 采集 + USB 串口发送│   │   ├── model_int8.tflite          #    INT8 量化 TFLite 模型
+- `nn_model.c`
 
-│   │       └── cdc_acm.c             #    USB CDC 虚拟串口驱动│   │   ├── nn_model.c                 #    生成的 C 推理代码
+- `nn_model.h`│   │       ├── imu_task.c             #    IMU 采集 + USB 串口发送│   │   ├── model_int8.tflite          #    INT8 量化 TFLite 模型
 
-│   ││   │   ├── nn_model.h                 #    生成的 C 头文件
+- `preprocessing.c`
 
-│   └── ai-inference/                  # ③ AI 推理固件│   │   ├── preprocessing.c            #    生成的预处理代码
+- `preprocessing.h`│   │       └── cdc_acm.c             #    USB CDC 虚拟串口驱动│   │   ├── nn_model.c                 #    生成的 C 推理代码
 
-│       └── applications/│   │   ├── preprocessing.h            #    生成的预处理头文件
 
-│           ├── main.c                 #    主程序 + LVGL UI（识别结果）│   │   ├── normalization_params.json  #    归一化参数
 
-│           ├── imu_task.c             #    IMU 六轴数据采集│   │   └── training_report.json       #    训练报告
+然后用 RT-Thread Studio 打开 `firmware/ai-inference/` 工程，编译烧录。上电后 LCD 显示动作识别界面，点击 **REC** 按钮开始实时识别。│   ││   │   ├── nn_model.h                 #    生成的 C 头文件
 
-│           ├── ai_task.c              #    AI 推理线程│   └── Resources/                     #    文档资源
 
-│           ├── nn_model.c/h           #    神经网络（自动生成）│       └── imgs/
+
+---│   └── ai-inference/                  # ③ AI 推理固件│   │   ├── preprocessing.c            #    生成的预处理代码
+
+
+
+## 硬件平台│       └── applications/│   │   ├── preprocessing.h            #    生成的预处理头文件
+
+
+
+本项目基于 **Edgi-Talk 开发板**，核心芯片为 Infineon PSoC Edge 系列。│           ├── main.c                 #    主程序 + LVGL UI（识别结果）│   │   ├── normalization_params.json  #    归一化参数
+
+
+
+- **MCU** — PSoC Edge M55 (Cortex-M55 应用核)│           ├── imu_task.c             #    IMU 六轴数据采集│   │   └── training_report.json       #    训练报告
+
+- **IMU** — ST LSM6DS3 (6 轴加速度计 + 陀螺仪)
+
+- **IMU 接口** — 软件 I2C (SCL: P8.0, SDA: P8.1)，地址 0x6A│           ├── ai_task.c              #    AI 推理线程│   └── Resources/                     #    文档资源
+
+- **显示屏** — MIPI DSI LCD，512 x 800 分辨率
+
+- **USB** — USB 2.0 HS，CDC ACM 虚拟串口 (CherryUSB)│           ├── nn_model.c/h           #    神经网络（自动生成）│       └── imgs/
+
+- **调试器** — 板载 DAP
 
 │           └── preprocessing.c/h      #    预处理（自动生成）│
 
+详细硬件接口请参考 [docs/hardware.md](docs/hardware.md)。
+
 │├── tools/                             # 辅助工具
+
+---
 
 ├── 🤖 model-training/                 # ② 模型训练（Python）│   ├── record.py                      #    PC 端串口数据录入脚本
 
+## 技术栈
+
 │   ├── run_training.py                #    一键训练脚本│   └── deploy_model.py                #    一键部署脚本（训练输出→固件）
 
-│   ├── train_model.ipynb              #    Jupyter Notebook 交互训练│
+- **RTOS** — RT-Thread 5.x
 
-│   ├── generate_c_inference.py        #    生成纯 C 推理引擎└── docs/                              # 项目文档
+- **GUI** — LVGL 9.x│   ├── train_model.ipynb              #    Jupyter Notebook 交互训练│
 
-│   ├── extract_model_weights.py       #    提取模型权重    ├── hardware.md                    #    硬件接口说明
+- **AI 训练** — TensorFlow / Keras
 
-│   ├── verify_c_inference.py          #    验证 C 推理正确性    └── figures/                       #    硬件接口图片
+- **AI 推理** — 纯 C INT8 量化推理引擎（无外部依赖）│   ├── generate_c_inference.py        #    生成纯 C 推理引擎└── docs/                              # 项目文档
 
-│   ├── requirements.txt               #    Python 依赖        ├── 1.png ~ 7.png
+- **USB** — CherryUSB (CDC ACM)
 
-│   ├── Data/                          #    训练数据集（2人采集）        └── ...
+- **IMU 驱动** — 软件 I2C + LSM6DS3│   ├── extract_model_weights.py       #    提取模型权重    ├── hardware.md                    #    硬件接口说明
 
-│   ├── output/                        #    训练输出（模型 + C 代码）```
+- **构建系统** — SCons
 
-│   └── Models/                        #    预训练模型
+- **交叉编译** — arm-none-eabi-gcc│   ├── verify_c_inference.py          #    验证 C 推理正确性    └── figures/                       #    硬件接口图片
 
-│---
 
-├── 🛠️ tools/                          # 辅助工具
 
-│   ├── record.py                      #    PC 端串口数据录入## 快速开始
+---│   ├── requirements.txt               #    Python 依赖        ├── 1.png ~ 7.png
 
-│   └── deploy_model.py                #    一键部署（训练输出 → 固件）
 
-│### 环境要求
 
-└── 📖 docs/                           # 项目文档
+## Introduction│   ├── Data/                          #    训练数据集（2人采集）        └── ...
 
-    ├── hardware.md                    #    硬件接口说明| 组件 | 要求 |
 
-    └── figures/                       #    硬件接口图|------|------|
+
+This project is a complete **end-to-end embedded AI motion recognition system** built on the **Edgi-Talk development board** (Infineon PSoC Edge M55 core) with **RT-Thread RTOS**. It uses the onboard IMU (LSM6DS3, 6-axis accelerometer + gyroscope) to recognize three motion types in real time:│   ├── output/                        #    训练输出（模型 + C 代码）```
+
+
+
+- **Stationary** — Still (on table / held steady)│   └── Models/                        #    预训练模型
+
+- **Shaking** — Shaking motion
+
+- **Circle** — Circular motion│---
+
+
+
+### Key Features├── 🛠️ tools/                          # 辅助工具
+
+
+
+- **Pure C Inference Engine** — No TFLite Micro or C++ dependency. Standalone INT8 quantized CNN in pure C.│   ├── record.py                      #    PC 端串口数据录入## 快速开始
+
+- **LVGL GUI** — Real-time waveform during data collection; recognition stats during inference.
+
+- **End-to-End Pipeline** — Data collection, training, INT8 quantization, C code generation, embedded deployment.│   └── deploy_model.py                #    一键部署（训练输出 → 固件）
+
+- **50Hz Real-time Inference** — Sliding window (100 samples / 2s window) with 20ms inference cycle.
+
+- **Ultra-lightweight** — 3x Conv2D + Dense, INT8 model ~50KB, 96.6% test accuracy.│### 环境要求
+
+
+
+### Quick Start└── 📖 docs/                           # 项目文档
+
+
+
+1. **Collect Data** — Flash `firmware/data-collector/`, record IMU data via USB CDC    ├── hardware.md                    #    硬件接口说明| 组件 | 要求 |
+
+2. **Train Model** — `cd model-training/ && python run_training.py`
+
+3. **Deploy** — `cd tools/ && python deploy_model.py`    └── figures/                       #    硬件接口图|------|------|
+
+4. **Run** — Flash `firmware/ai-inference/`, real-time motion recognition on LCD
 
 ```| **开发板** | Edgi-Talk (PSoC Edge, CY8CKIT-062S2-AI 或兼容板) |
 
+See the Chinese sections above for detailed step-by-step instructions.
+
 | **嵌入式 IDE** | RT-Thread Studio 2.x+ |
+
+---
 
 > **注意**：固件工程的 `rt-thread/`、`libraries/`、`packages/` 等第三方依赖未包含在仓库中，请参照[环境搭建](#环境搭建)章节获取。| **交叉编译器** | arm-none-eabi-gcc |
 
+## 开源许可
+
 | **Python** | 3.8+ (用于模型训练) |
+
+本项目采用 [MIT License](LICENSE) 开源。
 
 ---| **Python 依赖** | TensorFlow 2.12~2.16, NumPy, Pandas, scikit-learn |
 
+## 致谢
 
 
-## 🚀 快速开始### 第一步：数据采集
 
+- [RT-Thread](https://www.rt-thread.org/) — 实时操作系统
 
+- [LVGL](https://lvgl.io/) — 嵌入式图形库## 🚀 快速开始### 第一步：数据采集
+
+- [TensorFlow](https://www.tensorflow.org/) — 机器学习框架
+
+- [CherryUSB](https://github.com/cherry-embedded/CherryUSB) — USB 协议栈
+
+- [Infineon DEEPCRAFT Studio](https://softwaretools.infineon.com/) — 原始数据集来源
 
 ### 环境要求1. 使用 RT-Thread Studio 打开 `firmware/data-collector/` 工程
 
+## 贡献
+
 2. 编译并烧录至 Edgi-Talk 开发板
+
+欢迎提交 Issue 和 Pull Request！
 
 | 组件 | 要求 |3. 用 USB 数据线连接开发板至 PC
 
-|------|------|4. 运行数据录入脚本：
+1. Fork 本仓库
 
-| 🖥️ **开发板** | Edgi-Talk (Infineon PSoC Edge, M55 应用核) |
+2. 创建特性分支：`git checkout -b feature/amazing-feature`|------|------|4. 运行数据录入脚本：
+
+3. 提交更改：`git commit -m 'Add amazing feature'`
+
+4. 推送分支：`git push origin feature/amazing-feature`| 🖥️ **开发板** | Edgi-Talk (Infineon PSoC Edge, M55 应用核) |
+
+5. 发起 Pull Request
 
 | 🔨 **嵌入式 IDE** | RT-Thread Studio 2.x+ |```bash
 
